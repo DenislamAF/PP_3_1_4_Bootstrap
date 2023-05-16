@@ -13,7 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import ru.kata.spring.boot_security.demo.entities.Role;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,9 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService) {
+    private RoleService roleService;
+
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService, RoleService roleService) {
         this.successUserHandler = successUserHandler;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -39,6 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
                 .permitAll();
     }
 
@@ -66,6 +76,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userService);
+        createRolesAndDefaultAdmin();
         return daoAuthenticationProvider;
+    }
+
+    // создание стандартных ролей и админа
+    private void createRolesAndDefaultAdmin() {
+        if (roleService.findByName("ROLE_USER") == null) {
+            Role userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleService.saveRole(userRole);
+        }
+        if (roleService.findByName("ROLE_ADMIN") == null) {
+            Role adminRole = new Role();
+            adminRole.setName("ROLE_ADMIN");
+            roleService.saveRole(adminRole);
+        }
+        if (userService.findByUsername("admin") == null) {
+            ru.kata.spring.boot_security.demo.entities.User user = new ru.kata.spring.boot_security.demo.entities.User();
+            user.setUsername("admin");
+            user.setPassword("admin");
+            user.setFirstName("default");
+            user.setLastName("dafault");
+            user.setAge((byte) 1);
+            user.setEmail("default@mail.ru");
+            user.setRoles(new ArrayList<Role>(List.of(new Role[]{roleService.findByName("ROLE_ADMIN")})));
+            userService.saveUser(user);
+        }
     }
 }

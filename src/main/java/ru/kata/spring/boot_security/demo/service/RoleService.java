@@ -15,4 +15,9 @@ public class RoleService {
     public Role findByName(String name) {
         return roleRepository.findByName(name);
     }
+
+    @Transactional
+    public void saveRole(Role role) {
+        roleRepository.save(role);
+    }
 }

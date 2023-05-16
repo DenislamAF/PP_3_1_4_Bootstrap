@@ -27,5 +27,10 @@
         <td th:each="role : ${user.roles}" th:utext="${role.getName()}"></td>
     </tr>
 </table>
+<br>
+<br>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
 </body>
 </html>
