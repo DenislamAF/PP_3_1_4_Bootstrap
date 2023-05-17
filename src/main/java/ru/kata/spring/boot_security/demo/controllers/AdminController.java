@@ -1,13 +1,16 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +21,15 @@ import java.util.stream.Collectors;
 @Controller
 public class AdminController {
 
-    @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
+
+    private RoleService roleService;
 
     @Autowired
-    private RoleServiceImpl roleService;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping(value = "/admin")
     public String adminPage(Model model) {

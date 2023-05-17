@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.entities.Role;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import java.util.ArrayList;
@@ -20,11 +22,11 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
 
-    private UserServiceImpl userService;
+    private UserService userService;
 
-    private RoleServiceImpl roleService;
+    private RoleService roleService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserServiceImpl userService, RoleServiceImpl roleService) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService, RoleService roleService) {
         this.successUserHandler = successUserHandler;
         this.userService = userService;
         this.roleService = roleService;
@@ -92,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             user.setUsername("admin");
             user.setPassword("admin");
             user.setFirstName("default");
-            user.setLastName("dafault");
+            user.setLastName("default");
             user.setAge((byte) 1);
             user.setEmail("default@mail.ru");
             user.setRoles(new ArrayList<Role>(List.of(new Role[]{roleService.findByName("ROLE_ADMIN")})));

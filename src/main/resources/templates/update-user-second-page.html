@@ -9,7 +9,7 @@
 <form action="successfully-updated" method="get">
     <input type="number" name="id" placeholder="Enter the id" th:value="${user.getId()}" readonly/><br><br>
     <input type="text" name="username" placeholder="Enter the username" th:value="${user.getUsername()}"/><br><br>
-    <input type="text" name="password" placeholder="Enter the password" th:value="${user.getPassword()}"/><br><br>
+    <input type="password" name="password" placeholder="Enter the password" required/><br><br>
     <input type="text" name="firstName" placeholder="Enter the first name" th:value="${user.getFirstName()}"/><br><br>
     <input type="text" name="lastName" placeholder="Enter the last name" th:value="${user.getLastName()}"/><br><br>
     <input type="number" name="age" placeholder="Enter the age" th:value="${user.getAge()}"/><br><br>
