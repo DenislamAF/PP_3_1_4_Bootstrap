@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,10 +19,10 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
 
     @GetMapping(value = "/admin")
     public String adminPage(Model model) {
@@ -72,6 +70,12 @@ public class AdminController {
     public String updateUserPage(Model model) {
         model.addAttribute("list", userService.getAllUsers());
         return "update-user";
+    }
+
+    @GetMapping(value = "/admin/updating")
+    public String updatingUserPage(Model model, @RequestParam("id") Long id) {
+        model.addAttribute("user", userService.findById(id));
+        return "update-user-second-page";
     }
 
     @GetMapping(value = "/admin/successfully-updated")
