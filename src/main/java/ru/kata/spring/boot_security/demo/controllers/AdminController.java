@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,75 +34,54 @@ public class AdminController {
 
     @GetMapping(value = "/admin")
     public String adminPage(Model model) {
+        String usernameOfCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.findByUsername(usernameOfCurrentUser);
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("list", userService.getAllUsers());
         return "admin-table";
     }
 
     @GetMapping(value = "/admin/add-user")
-    public String addUserPage() {
-        return "add-user";
-    }
-
-    @GetMapping(value = "/admin/successfully-added")
     public String successAddedPage(HttpServletRequest request,
-                                   @RequestParam("age") byte age,
+                                   @RequestParam("age") int age,
                                    @RequestParam("roles") String roles) {
         User user = new User();
-        user.setUsername(request.getParameter("username"));
+        user.setUsername(request.getParameter("email"));
         user.setPassword(request.getParameter("password"));
         user.setFirstName(request.getParameter("firstName"));
         user.setLastName(request.getParameter("lastName"));
-        user.setAge(age);
-        user.setEmail(request.getParameter("email"));
+        user.setAge((byte) age);
         Collection<Role> collection =
                 Arrays.stream(roles.replaceAll("\\s", "").split(","))
                 .map(s -> roleService.findByName(s)).collect(Collectors.toList());
         user.setRoles(collection);
+        System.out.println(request.getParameter("roles"));
         userService.saveUser(user);
-        return "successfully-added";
+        return "redirect:/admin";
     }
 
     @GetMapping(value = "/admin/delete-user")
-    public String deleteUserPage(Model model) {
-        model.addAttribute("list", userService.getAllUsers());
-        return "delete-user";
-    }
-
-    @GetMapping(value = "/admin/successfully-deleted")
     public String successDeletedPage(@RequestParam(value = "id") Long id) {
         userService.removeUser(id);
-        return "successfully-deleted";
+        return "redirect:/admin";
     }
 
     @GetMapping(value = "/admin/update-user")
-    public String updateUserPage(Model model) {
-        model.addAttribute("list", userService.getAllUsers());
-        return "update-user";
-    }
-
-    @GetMapping(value = "/admin/updating")
-    public String updatingUserPage(Model model, @RequestParam("id") Long id) {
-        model.addAttribute("user", userService.findById(id));
-        return "update-user-second-page";
-    }
-
-    @GetMapping(value = "/admin/successfully-updated")
     public String successUpdatedPage(HttpServletRequest request,
-                                     @RequestParam("id") Long id,
-                                     @RequestParam("age") byte age,
-                                     @RequestParam("roles") String roles) {
+                                     @RequestParam("idToEdit") Long id,
+                                     @RequestParam("ageToEdit") byte age,
+                                     @RequestParam("rolesToEdit") String roles) {
         User userFromDB = userService.findById(id);
-        userFromDB.setUsername(request.getParameter("username"));
-        userFromDB.setPassword(request.getParameter("password"));
-        userFromDB.setFirstName(request.getParameter("firstName"));
-        userFromDB.setLastName(request.getParameter("lastName"));
+        userFromDB.setUsername(request.getParameter("emailToEdit"));
+        userFromDB.setPassword(request.getParameter("passwordToEdit"));
+        userFromDB.setFirstName(request.getParameter("firstNameToEdit"));
+        userFromDB.setLastName(request.getParameter("lastNameToEdit"));
         userFromDB.setAge(age);
-        userFromDB.setEmail(request.getParameter("email"));
         Collection<Role> collection =
                 Arrays.stream(roles.replaceAll("\\s", "").split(","))
                         .map(s -> roleService.findByName(s)).collect(Collectors.toList());
         userFromDB.setRoles(collection);
         userService.saveUser(userFromDB);
-        return "successfully-updated";
+        return "redirect:/admin";
     }
 }

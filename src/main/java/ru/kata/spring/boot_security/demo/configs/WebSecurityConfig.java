@@ -34,13 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin().loginPage("/login").successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout()
@@ -89,14 +89,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             adminRole.setName("ROLE_ADMIN");
             roleService.saveRole(adminRole);
         }
-        if (userService.findByUsername("admin") == null) {
+        if (userService.findByUsername("admin@mail.ru") == null) {
             ru.kata.spring.boot_security.demo.entities.User user = new ru.kata.spring.boot_security.demo.entities.User();
-            user.setUsername("admin");
+            user.setUsername("admin@mail.ru");
             user.setPassword("admin");
             user.setFirstName("default");
             user.setLastName("default");
             user.setAge((byte) 1);
-            user.setEmail("default@mail.ru");
             user.setRoles(new ArrayList<Role>(List.of(new Role[]{roleService.findByName("ROLE_ADMIN")})));
             userService.saveUser(user);
         }

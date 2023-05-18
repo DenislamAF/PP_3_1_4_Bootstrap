@@ -28,9 +28,6 @@ public class User implements UserDetails {
     @Column(name = "age")
     private byte age;
 
-    @Column(name = "email")
-    private String email;
-
     @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -39,11 +36,10 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String firstName, String lastName, byte age, String email, Collection<Role> roles) {
+    public User(String firstName, String lastName, byte age, Collection<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-        this.email = email;
         this.roles = roles;
     }
 
@@ -87,15 +83,15 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public String getRolesToString() {
+        String roles = "";
+        for (Role role : this.roles) {
+            roles += role.getName().replace("ROLE_", "") + " ";
+        }
         return roles;
     }
 
