@@ -41,6 +41,14 @@ public class AdminController {
         return "admin-table";
     }
 
+    @GetMapping(value = "/admin/info")
+    public String adminInfoPage(Model model) {
+        String usernameOfCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.findByUsername(usernameOfCurrentUser);
+        model.addAttribute("user", currentUser);
+        return "admin-info";
+    }
+
     @GetMapping(value = "/admin/add-user")
     public String successAddedPage(HttpServletRequest request,
                                    @RequestParam("age") int age,
