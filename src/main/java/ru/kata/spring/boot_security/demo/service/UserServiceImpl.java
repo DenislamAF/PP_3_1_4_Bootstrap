@@ -53,6 +53,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Transactional
     public void removeUser(Long id) {
         userRepository.deleteById(id);
     }

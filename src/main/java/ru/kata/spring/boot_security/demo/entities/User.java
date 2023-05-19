@@ -95,6 +95,15 @@ public class User implements UserDetails {
         return roles;
     }
 
+    public boolean containsRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }

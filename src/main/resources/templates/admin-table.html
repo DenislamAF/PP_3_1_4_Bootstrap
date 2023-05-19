@@ -162,7 +162,7 @@
                                                                 <label for="password"><b>Password</b></label>
                                                                 <input type="password" class="form-control"
                                                                        id="passwordToEdit" name="passwordToEdit"
-                                                                       placeholder="Password" required>
+                                                                       placeholder="Leave empty to save old">
                                                             </div>
                                                             <br>
                                                             <div class="form-group form-control-sm col-md-12 mx-auto"
@@ -170,8 +170,14 @@
                                                                 <label for="roles"><b>Role</b></label>
                                                                 <select class="custom-select form-control-sm"
                                                                         size="2" id="rolesToEdit" name="rolesToEdit">
-                                                                    <option value="ROLE_ADMIN">ADMIN</option>
-                                                                    <option value="ROLE_USER">USER</option>
+                                                                    <option value="ROLE_ADMIN"
+                                                                            th:selected="${user.containsRole('ROLE_ADMIN')}">
+                                                                        ADMIN
+                                                                    </option>
+                                                                    <option value="ROLE_USER"
+                                                                            th:selected="${user.containsRole('ROLE_USER')}">
+                                                                        USER
+                                                                    </option>
                                                                 </select>
                                                             </div>
                                                             <br><br><br>

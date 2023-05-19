@@ -81,7 +81,10 @@ public class AdminController {
                                      @RequestParam("rolesToEdit") String roles) {
         User userFromDB = userService.findById(id);
         userFromDB.setUsername(request.getParameter("emailToEdit"));
-        userFromDB.setPassword(request.getParameter("passwordToEdit"));
+        System.out.println(request.getParameter("passwordToEdit"));
+        if (!(request.getParameter("passwordToEdit") == null || request.getParameter("passwordToEdit").equals(""))) {
+            userFromDB.setPassword(request.getParameter("passwordToEdit"));
+        }
         userFromDB.setFirstName(request.getParameter("firstNameToEdit"));
         userFromDB.setLastName(request.getParameter("lastNameToEdit"));
         userFromDB.setAge(age);
@@ -89,7 +92,11 @@ public class AdminController {
                 Arrays.stream(roles.replaceAll("\\s", "").split(","))
                         .map(s -> roleService.findByName(s)).collect(Collectors.toList());
         userFromDB.setRoles(collection);
-        userService.saveUser(userFromDB);
+        if (request.getParameter("passwordToEdit") == null || request.getParameter("passwordToEdit").equals("")) {
+            userService.updateUser(userFromDB);
+        } else {
+            userService.saveUser(userFromDB);
+        }
         return "redirect:/admin";
     }
 }
